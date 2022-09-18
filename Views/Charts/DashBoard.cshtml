@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+ <div class="panel panel-primary">
+     <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3">
+                <table id="customers">
+                    <tr>
+                        <th colspan="2">Audit Statistics</th>
+                    </tr>
+                    @{
+                        var audiits = (List<SampleApplication.Data.Entities.Audit>)ViewData["Audits"];
+                        if(audiits != null)
+                        {
+                            var status = audiits.GroupBy(x=>x.Status);
+                            foreach(var item in status)
+                            {
+                                <tr>
+                                    <td>@item.First().Status</td>
+                                    <td>@item.Count()</td>
+                                </tr>
+                            }
+                        }
+                    }
+                </table>
+            </div>
+              <div class="col-md-3">
+                <div><canvas id="pieChart"></canvas></div>
+              </div>
+              <div class="col-md-3">
+                <div><canvas id="barChart"></canvas></div>
+              </div>
+              <div class="col-md-3">
+                <div><canvas id="lineChart"></canvas></div>
+              </div>
+        </div>
+     </div>
+ </div>
+
+
+@{
+    var pieChart = (ChartJSCore.Models.Chart)ViewData["PieChart"]; 
+    var barChart = (ChartJSCore.Models.Chart)ViewData["BarChart"]; 
+    var lineChart = (ChartJSCore.Models.Chart)ViewData["LineChart"]; 
+}
+
+@section Scripts {
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        @Html.Raw(pieChart.CreateChartCode("pieChart"));
+        @Html.Raw(barChart.CreateChartCode("barChart"));
+        @Html.Raw(lineChart.CreateChartCode("lineChart"));
+    </script>
+}
